@@ -1,7 +1,7 @@
 import express from 'express';
 import Database from '../database/Database.js';
 import EntregasRepository from '../repositories/EntregasRepository.js';
-import EntregasService from '../services/EntregasService.js';
+import EntregasService from '../services/EntregasServices.js';
 import EntregasController from '../controllers/EntregasController.js';
 
 
