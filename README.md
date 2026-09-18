@@ -52,3 +52,56 @@ src/
 
 Faça **um commit por avanço** (Conventional Commits, ex.: `feat(entregas): valida origem ≠ destino`).
 Bom trabalho! 🚀
+
+---
+
+## Documentação da API - Atividade 05 (Entregas)
+
+Abaixo estão as instruções de execução e exemplos práticos de como testar as rotas implementadas nesta etapa utilizando o `curl`.
+
+### Instruções de Execução
+
+1. Instale as dependências:
+   ```bash
+   npm install
+   ```
+
+   Inicie o servidor:
+   ```bash
+   npm start
+   ```
+
+   O servidor rodará na porta padrão 3000 ou na porta definida na variável de ambiente PORT.
+
+### Exemplos de Requisição (cURL)
+
+1. Criar uma nova entrega (POST /api/entregas)
+```bash
+   curl -X POST http://localhost:3000/api/entregas \
+  -H "Content-Type: application/json" \
+  -d '{"descricao": "Teclado Mecânico", "origem": "Maceió", "destino": "Recife"}'
+```
+
+2. Listar todas as entregas (GET /api/entregas)
+```bash
+   curl -X GET http://localhost:3000/api/entregas
+```
+3. Buscar entrega específica por ID (GET /api/entregas/:id)
+```bash
+   curl -X GET http://localhost:3000/api/entregas/1
+```
+
+4. Avançar o status da entrega (PATCH /api/entregas/:id/avancar)
+```bash
+   curl -X PATCH http://localhost:3000/api/entregas/1/avancar
+```
+
+5. Ver o histórico de eventos da entrega (GET /api/entregas/:id/historico)
+```bash
+   curl -X GET http://localhost:3000/api/entregas/1/historico
+```
+
+6. Cancelar uma entrega (PATCH /api/entregas/:id/cancelar)
+```bash
+   curl -X PATCH http://localhost:3000/api/entregas/1/cancelar
+```
