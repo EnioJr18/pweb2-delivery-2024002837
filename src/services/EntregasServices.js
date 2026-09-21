@@ -1,6 +1,7 @@
 export default class EntregasService {
-  constructor(repository) {
-    this.repository = repository;
+  constructor(entregasRepo, motoristasRepo) {
+    this.repository = entregasRepo;
+    this.motoristasRepo = motoristasRepo;
   }
 
   criarEntrega(dados) {
@@ -13,7 +14,7 @@ export default class EntregasService {
       throw { status: 400, message: "Origem e destino não podem ser iguais." };
     }
 
-    const entregas = this.repository.buscarTodas();
+    const entregas = this.repository.listarTodos();
     const duplicataAtiva = entregas.find(e => 
       e.descricao === descricao && 
       e.origem === origem && 
@@ -38,15 +39,12 @@ export default class EntregasService {
       }]
     };
 
-    return this.repository.salvar(novaEntrega);
+    return this.repository.criar(novaEntrega);
   }
 
   buscarTodas(statusFiltro) {
-    let entregas = this.repository.buscarTodas();
-    if (statusFiltro) {
-      entregas = entregas.filter(e => e.status === statusFiltro);
-    }
-    return entregas;
+    const filtro = statusFiltro ? { status: statusFiltro } : undefined;
+    return this.repository.listarTodos(filtro);
   }
 
   buscarPorId(id) {
@@ -68,7 +66,7 @@ export default class EntregasService {
       throw { status: 422, message: "Transição de status inválida." };
     }
 
-    return this.repository.atualizar(entrega);
+    return this.repository.atualizar(entrega.id, entrega);
   }
 
   cancelar(id) {
@@ -80,6 +78,29 @@ export default class EntregasService {
 
     entrega.status = 'CANCELADA';
     entrega.historico.push({ data: new Date().toISOString(), descricao: "Entrega cancelada" });
-    return this.repository.atualizar(entrega);
+    
+    return this.repository.atualizar(entrega.id, entrega);
+  }
+
+  atribuirMotorista(id, motoristaId) {
+    const entrega = this.buscarPorId(id);
+    
+    if (entrega.status !== 'CRIADA') {
+      throw { status: 422, message: "Só é possível atribuir motorista se a entrega estiver CRIADA." };
+    }
+
+    const motorista = this.motoristasRepo.buscarPorId(motoristaId);
+    if (!motorista) {
+      throw { status: 404, message: "Motorista não encontrado." };
+    }
+
+    if (motorista.status !== 'ATIVO') {
+      throw { status: 422, message: "Motorista INATIVO não pode ser atribuído." };
+    }
+
+    entrega.motoristaId = motorista.id;
+    entrega.historico.push({ data: new Date().toISOString(), descricao: "Motorista atribuído" });
+    
+    return this.repository.atualizar(entrega.id, entrega);
   }
 }

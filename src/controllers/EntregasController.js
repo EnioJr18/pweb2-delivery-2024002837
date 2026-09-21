@@ -57,4 +57,14 @@ export default class EntregasController {
       res.status(error.status || 500).json({ erro: error.message });
     }
   }
+
+  atribuir = (req, res) => {
+    try {
+      const { motoristaId } = req.body;
+      const entrega = this.service.atribuirMotorista(req.params.id, motoristaId);
+      res.status(200).json(entrega);
+    } catch (error) {
+      res.status(error.status || 500).json({ erro: error.message });
+    }
+  }
 }
