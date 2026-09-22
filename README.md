@@ -105,3 +105,57 @@ Abaixo estão as instruções de execução e exemplos práticos de como testar 
 ```bash
    curl -X PATCH http://localhost:3000/api/entregas/1/cancelar
 ```
+
+---
+
+## Documentação da API - Atividade 06 (Motoristas e DI)
+
+### Diagrama de Composição de Dependências (DI)
+
+Abaixo está a representação da injeção de dependências realizada no Composition Root (`src/routes/index.js`):
+
+```text
+[ routes/index.js ] (Composition Root)
+   │
+   ├──> 1. Database (Instância em Memória)
+   │
+   ├──> 2. Repositories (Acesso a Dados via Contratos JSDoc)
+   │      ├──> EntregasRepository (injeta: Database)
+   │      └──> MotoristasRepository (injeta: Database)
+   │
+   ├──> 3. Services (Regras de Negócio)
+   │      ├──> EntregasService (injeta: EntregasRepository, MotoristasRepository)
+   │      └──> MotoristasService (injeta: MotoristasRepository, EntregasRepository)
+   │
+   └──> 4. Controllers (Tradução HTTP)
+          ├──> EntregasController (injeta: EntregasService)
+          └──> MotoristasController (injeta: MotoristasService)
+```
+
+### Novos Exemplos de Requisição (cURL)
+
+7. Cadastrar Motorista (POST /api/motoristas)
+```bash
+   curl -X POST http://localhost:3000/api/motoristas \
+   -H "Content-Type: application/json" \
+   -d '{"nome": "João Silva", "cpf": "11122233344", "placaVeiculo": "ABC-1234"}'
+```
+
+8. Atribuir motorista a uma entrega (PATCH /api/entregas/:id/atribuir)
+```bash
+   curl -X PATCH http://localhost:3000/api/entregas/1/atribuir \
+   -H "Content-Type: application/json" \
+   -d '{"motoristaId": 1}'
+```
+9. Listar todos os motoristas (GET /api/motoristas)
+```bash
+   curl -X GET http://localhost:3000/api/motoristas
+```
+10. Buscar motorista por ID (GET /api/motoristas/:id)
+```bash
+   curl -X GET http://localhost:3000/api/motoristas/1
+```
+11. Listar entregas de um motorista (GET /api/motoristas/:id/entregas)
+```bash
+   curl -X GET http://localhost:3000/api/motoristas/1/entregas
+```
