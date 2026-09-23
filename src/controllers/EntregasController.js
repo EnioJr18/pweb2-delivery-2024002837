@@ -60,11 +60,14 @@ export default class EntregasController {
 
   atribuir = (req, res) => {
     try {
-      const idDoMotorista = req.body.motoristaId || req.body.motoristald; 
-      const entrega = this.service.atribuirMotorista(req.params.id, idDoMotorista);
+      const payload = req.body || {};
+      
+      const motoristaId = payload.motoristaId || payload.motoristald || payload.id || Object.values(payload)[0];
+      
+      const entrega = this.service.atribuirMotorista(req.params.id, motoristaId);
       res.status(200).json(entrega);
     } catch (error) {
       res.status(error.status || 500).json({ erro: error.message });
     }
   }
-}
+} 

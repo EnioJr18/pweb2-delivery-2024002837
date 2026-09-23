@@ -37,8 +37,8 @@ export default class MotoristasService {
   }
 
   listarEntregasDoMotorista(motoristaId, status) {
-    this.buscarPorId(motoristaId); 
-    
+    this.buscarPorId(motoristaId);
+
     const filtro = status ? { status } : undefined;
     const entregas = this.entregasRepo.listarTodos(filtro);
     
