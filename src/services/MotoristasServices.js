@@ -42,6 +42,6 @@ export default class MotoristasService {
     const filtro = status ? { status } : undefined;
     const entregas = this.entregasRepo.listarTodos(filtro);
     
-    return entregas.filter(e => e.motoristaId === Number(motoristaId));
+    return entregas.filter(e => e.motoristaId === Number(motoristaId) || e.motoristald === Number(motoristaId));
   }
 }

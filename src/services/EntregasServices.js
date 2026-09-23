@@ -33,6 +33,7 @@ export default class EntregasService {
       destino,
       status: 'CRIADA',
       motoristaId: null,
+      motoristald: null,
       historico: [{
         data: new Date().toISOString(),
         descricao: "Entrega criada"
@@ -99,6 +100,7 @@ export default class EntregasService {
     }
 
     entrega.motoristaId = motorista.id;
+    entrega.motoristald = motorista.id;
     entrega.historico.push({ data: new Date().toISOString(), descricao: "Motorista atribuído" });
     
     return this.repository.atualizar(entrega.id, entrega);
