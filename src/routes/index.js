@@ -2,8 +2,8 @@ import express from 'express';
 import Database from '../database/Database.js';
 import EntregasRepository from '../repositories/EntregasRepository.js';
 import MotoristasRepository from '../repositories/MotoristasRepository.js';
-import EntregasService from '../services/EntregasService.js';
-import MotoristasService from '../services/MotoristasService.js';
+import EntregasService from '../services/EntregasServices.js';
+import MotoristasService from '../services/MotoristasServices.js';
 import EntregasController from '../controllers/EntregasController.js';
 import MotoristasController from '../controllers/MotoristasController.js';
 
