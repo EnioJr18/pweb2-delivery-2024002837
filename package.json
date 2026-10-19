@@ -4,6 +4,7 @@
   "description": "Delivery Tracker — Exercício do Cap. 4 (arquitetura em camadas + Repository/DI).",
   "type": "module",
   "scripts": {
+    "prestart": "npx prisma generate && npx prisma migrate deploy",
     "start": "node server.js",
     "dev": "node --watch server.js",
     "check": "node autograder/check.mjs"
