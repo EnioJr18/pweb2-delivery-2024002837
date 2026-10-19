@@ -3,3 +3,7 @@ npm-debug.log*
 .env
 *.db
 .DS_Store
+/.agents
+/.claude
+/.windsurf
+/src/generated/prisma

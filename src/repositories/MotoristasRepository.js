@@ -1,34 +1,33 @@
+import { prisma } from "../database/prisma.js";
+
 /**
  * Contrato IMotoristasRepository
  * @interface IMotoristasRepository
- * @method listarTodos() => Motorista[]
- * @method buscarPorId(id: number) => Motorista | null
- * @method buscarPorCpf(cpf: string) => Motorista | null
- * @method criar(dados: Object) => Motorista
+ * @method listarTodos() => Promise<Motorista[]>
+ * @method buscarPorId(id: number) => Promise<Motorista | null>
+ * @method buscarPorCpf(cpf: string) => Promise<Motorista | null>
+ * @method criar(dados: Object) => Promise<Motorista>
  */
 export default class MotoristasRepository {
-  constructor(database) {
-    this.db = database;
+  async listarTodos() {
+    return await prisma.motorista.findMany();
   }
 
-  listarTodos() {
-    return this.db.motoristas;
+  async buscarPorId(id) {
+    return await prisma.motorista.findUnique({
+      where: { id: Number(id) },
+    });
   }
 
-  buscarPorId(id) {
-    return this.db.motoristas.find(m => m.id === Number(id)) || null;
+  async buscarPorCpf(cpf) {
+    return await prisma.motorista.findUnique({
+      where: { cpf },
+    });
   }
 
-  buscarPorCpf(cpf) {
-    return this.db.motoristas.find(m => m.cpf === cpf) || null;
-  }
-
-  criar(dados) {
-    const motorista = {
-      id: this.db.currentMotoristaId++,
-      ...dados
-    };
-    this.db.motoristas.push(motorista);
-    return motorista;
+  async criar(dados) {
+    return await prisma.motorista.create({
+      data: dados,
+    });
   }
 }

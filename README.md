@@ -62,11 +62,13 @@ Abaixo estão as instruções de execução e exemplos práticos de como testar 
 ### Instruções de Execução
 
 1. Instale as dependências:
+
    ```bash
    npm install
    ```
 
    Inicie o servidor:
+
    ```bash
    npm start
    ```
@@ -76,6 +78,7 @@ Abaixo estão as instruções de execução e exemplos práticos de como testar 
 ### Exemplos de Requisição (cURL)
 
 1. Criar uma nova entrega (POST /api/entregas)
+
 ```bash
    curl -X POST http://localhost:3000/api/entregas \
   -H "Content-Type: application/json" \
@@ -83,25 +86,31 @@ Abaixo estão as instruções de execução e exemplos práticos de como testar 
 ```
 
 2. Listar todas as entregas (GET /api/entregas)
+
 ```bash
    curl -X GET http://localhost:3000/api/entregas
 ```
+
 3. Buscar entrega específica por ID (GET /api/entregas/:id)
+
 ```bash
    curl -X GET http://localhost:3000/api/entregas/1
 ```
 
 4. Avançar o status da entrega (PATCH /api/entregas/:id/avancar)
+
 ```bash
    curl -X PATCH http://localhost:3000/api/entregas/1/avancar
 ```
 
 5. Ver o histórico de eventos da entrega (GET /api/entregas/:id/historico)
+
 ```bash
    curl -X GET http://localhost:3000/api/entregas/1/historico
 ```
 
 6. Cancelar uma entrega (PATCH /api/entregas/:id/cancelar)
+
 ```bash
    curl -X PATCH http://localhost:3000/api/entregas/1/cancelar
 ```
@@ -135,6 +144,7 @@ Abaixo está a representação da injeção de dependências realizada no Compos
 ### Novos Exemplos de Requisição (cURL)
 
 7. Cadastrar Motorista (POST /api/motoristas)
+
 ```bash
    curl -X POST http://localhost:3000/api/motoristas \
    -H "Content-Type: application/json" \
@@ -142,20 +152,64 @@ Abaixo está a representação da injeção de dependências realizada no Compos
 ```
 
 8. Atribuir motorista a uma entrega (PATCH /api/entregas/:id/atribuir)
+
 ```bash
    curl -X PATCH http://localhost:3000/api/entregas/1/atribuir \
    -H "Content-Type: application/json" \
    -d '{"motoristaId": 1}'
 ```
+
 9. Listar todos os motoristas (GET /api/motoristas)
+
 ```bash
    curl -X GET http://localhost:3000/api/motoristas
 ```
+
 10. Buscar motorista por ID (GET /api/motoristas/:id)
+
 ```bash
    curl -X GET http://localhost:3000/api/motoristas/1
 ```
+
 11. Listar entregas de um motorista (GET /api/motoristas/:id/entregas)
+
 ```bash
    curl -X GET http://localhost:3000/api/motoristas/1/entregas
 ```
+
+---
+
+## Documentação da API - Atividade 07 (Prisma ORM + SQLite)
+
+O projeto agora utiliza o **Prisma ORM** com uma base de dados **SQLite** real para garantir a persistência dos dados entre reinícios do servidor.
+
+### Como rodar com a Base de Dados
+
+1. Instale as dependências (agora incluindo o Prisma Client):
+
+```bash
+   npm install
+```
+
+1. Crie o ficheiro de ambiente:
+   Copie o ficheiro .env.example para .env. Ele já contém a configuração local necessária:
+
+```bash
+   Snippet de código
+   DATABASE_URL="file:./dev.db"
+   PORT=3000
+```
+
+2. Gere a base de dados e as tabelas:
+
+```bash
+npx prisma migrate dev
+```
+
+Inicie o servidor:
+
+```bash
+npm start
+```
+
+**Nota:** Para inspecionar visualmente os dados gravados no SQLite, pode utilizar o comando npx prisma studio.
