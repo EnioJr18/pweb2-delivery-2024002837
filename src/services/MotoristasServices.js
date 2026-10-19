@@ -4,17 +4,13 @@ export default class MotoristasService {
     this.entregasRepo = entregasRepo;
   }
 
-  criarMotorista(dados) {
+  async criarMotorista(dados) {
     const { nome, cpf, placaVeiculo } = dados;
 
-    if (!nome || !cpf) {
-      throw { status: 400, message: "Nome e CPF são obrigatórios." };
-    }
+    if (!nome || !cpf) throw { status: 400, message: "Nome e CPF são obrigatórios." };
 
-    const existe = this.motoristasRepo.buscarPorCpf(cpf);
-    if (existe) {
-      throw { status: 409, message: "CPF já cadastrado." };
-    }
+    const existe = await this.motoristasRepo.buscarPorCpf(cpf);
+    if (existe) throw { status: 409, message: "CPF já cadastrado." };
 
     const novoMotorista = {
       nome,
@@ -23,25 +19,23 @@ export default class MotoristasService {
       status: 'ATIVO'
     };
 
-    return this.motoristasRepo.criar(novoMotorista);
+    return await this.motoristasRepo.criar(novoMotorista);
   }
 
-  listarTodos() {
-    return this.motoristasRepo.listarTodos();
+  async listarTodos() {
+    return await this.motoristasRepo.listarTodos();
   }
 
-  buscarPorId(id) {
-    const motorista = this.motoristasRepo.buscarPorId(id);
+  async buscarPorId(id) {
+    const motorista = await this.motoristasRepo.buscarPorId(id);
     if (!motorista) throw { status: 404, message: "Motorista não encontrado." };
     return motorista;
   }
 
-  listarEntregasDoMotorista(motoristaId, status) {
-    this.buscarPorId(motoristaId); 
-    
+  async listarEntregasDoMotorista(motoristaId, status) {
     const filtro = status ? { status } : undefined;
-    const entregas = this.entregasRepo.listarTodos(filtro);
+    const entregas = await this.entregasRepo.listarTodos(filtro);
     
-    return entregas.filter(e => e.motoristaId === Number(motoristaId));
+    return entregas.filter(e => e.motoristaId === Number(motoristaId) || e.motoristald === Number(motoristaId));
   }
 }
