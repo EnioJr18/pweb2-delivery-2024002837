@@ -1,39 +1,62 @@
+import { prisma } from '../database/prisma.js';
+
 /**
  * Contrato IEntregasRepository
  * @interface IEntregasRepository
- * @method listarTodos(filtros?: Object) => Entrega[]
- * @method buscarPorId(id: number) => Entrega | null
- * @method criar(dados: Object) => Entrega
- * @method atualizar(id: number, dados: Object) => Entrega
+ * @method listarTodos(filtros?: Object) => Promise<Entrega[]>
+ * @method buscarPorId(id: number) => Promise<Entrega | null>
+ * @method criar(dados: Object) => Promise<Entrega>
+ * @method atualizar(id: number, dados: Object) => Promise<Entrega>
  */
 export default class EntregasRepository {
-  constructor(database) {
-    this.db = database;
+  async listarTodos(filtros) {
+    const where = filtros && filtros.status ? { status: filtros.status } : {};
+    return await prisma.entrega.findMany({ 
+      where 
+    });
   }
 
-  listarTodos(filtros) {
-    let entregas = this.db.entregas;
-    if (filtros && filtros.status) {
-      entregas = entregas.filter(e => e.status === filtros.status);
-    }
-    return entregas;
+  async buscarPorId(id) {
+    return await prisma.entrega.findUnique({
+      where: { id: Number(id) },
+      include: { historico: true }
+    });
   }
 
-  buscarPorId(id) {
-    return this.db.entregas.find(e => e.id === Number(id)) || null;
+  async criar(dados) {
+    const { historico, ...entregaData } = dados;
+    
+    return await prisma.entrega.create({
+      data: {
+        ...entregaData,
+        historico: {
+          create: historico
+        }
+      },
+      include: { historico: true }
+    });
   }
 
-  criar(dados) {
-    dados.id = this.db.currentId++;
-    this.db.entregas.push(dados);
-    return dados;
-  }
+  async atualizar(id, dados) {
+    const { historico, ...entregaData } = dados;
+    
+    const novosEventos = historico 
+      ? historico.filter(h => !h.id).map(h => ({ data: h.data, descricao: h.descricao })) 
+      : [];
 
-  atualizar(id, dados) {
-    const index = this.db.entregas.findIndex(e => e.id === Number(id));
-    if (index !== -1) {
-      this.db.entregas[index] = dados;
-    }
-    return dados;
+    return await prisma.entrega.update({
+      where: { id: Number(id) },
+      data: {
+        descricao: entregaData.descricao,
+        origem: entregaData.origem,
+        destino: entregaData.destino,
+        status: entregaData.status,
+        motoristaId: entregaData.motoristaId,
+        historico: {
+          create: novosEventos
+        }
+      },
+      include: { historico: true }
+    });
   }
 }
