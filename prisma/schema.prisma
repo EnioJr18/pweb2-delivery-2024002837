@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Motorista {
+  id           Int       @id @default(autoincrement())
+  nome         String
+  cpf          String    @unique // O CPF deve ser único no schema
+  placaVeiculo String?   // Opcional
+  status       String    @default("ATIVO")
+  
+  // Relacionamento: Um motorista pode ter várias entregas
+  entregas     Entrega[] 
+}
+
+model Entrega {
+  id          Int      @id @default(autoincrement())
+  descricao   String
+  origem      String
+  destino     String
+  status      String   @default("CRIADA")
+  
+  // Relacionamento com Motorista (Opcional, pois começa null)
+  motoristaId Int?
+  motorista   Motorista? @relation(fields: [motoristaId], references: [id])
+
+  // Relacionamento: Uma entrega tem um histórico de vários eventos
+  historico   EventoHistorico[]
+}
+
+model EventoHistorico {
+  id        Int      @id @default(autoincrement())
+  data      String   // Guardando como ISO string para manter a compatibilidade com a Ativ. 05
+  descricao String
+  
+  // Relacionamento obrigatório com a Entrega
+  entregaId Int
+  entrega   Entrega  @relation(fields: [entregaId], references: [id], onDelete: Cascade)
+}
