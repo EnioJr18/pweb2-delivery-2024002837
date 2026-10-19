@@ -19,7 +19,11 @@ export default class EntregasService {
     if (duplicataAtiva) throw { status: 409, message: "Entrega duplicada ativa já existe." };
 
     const novaEntrega = {
-      descricao, origem, destino, status: 'CRIADA', motoristaId: null, motoristald: null,
+      descricao, 
+      origem, 
+      destino, 
+      status: 'CRIADA', 
+      motoristaId: null,
       historico: [{ data: new Date().toISOString(), descricao: "Entrega criada" }]
     };
 
@@ -76,7 +80,6 @@ export default class EntregasService {
     if (motorista.status !== 'ATIVO') throw { status: 422, message: "Motorista INATIVO não pode ser atribuído." };
 
     entrega.motoristaId = motorista.id;
-    entrega.motoristald = motorista.id; 
     entrega.historico.push({ data: new Date().toISOString(), descricao: "Motorista atribuído" });
     
     return await this.repository.atualizar(entrega.id, entrega);

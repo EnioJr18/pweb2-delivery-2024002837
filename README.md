@@ -159,3 +159,34 @@ Abaixo está a representação da injeção de dependências realizada no Compos
 ```bash
    curl -X GET http://localhost:3000/api/motoristas/1/entregas
 ```
+
+---
+
+## Documentação da API - Atividade 07 (Prisma ORM + SQLite)
+
+O projeto agora utiliza o **Prisma ORM** com uma base de dados **SQLite** real para garantir a persistência dos dados entre reinícios do servidor.
+
+### Como rodar com a Base de Dados
+
+1. Instale as dependências (agora incluindo o Prisma Client):
+```bash
+   npm install
+```
+
+1. Crie o ficheiro de ambiente:
+Copie o ficheiro .env.example para .env. Ele já contém a configuração local necessária:
+```bash
+   Snippet de código
+   DATABASE_URL="file:./dev.db"
+   PORT=3000
+```
+2. Gere a base de dados e as tabelas:
+```bash
+npx prisma migrate dev
+```
+Inicie o servidor:
+```bash
+npm start
+```
+**Nota:** Para inspecionar visualmente os dados gravados no SQLite, pode utilizar o comando npx prisma studio.
+
