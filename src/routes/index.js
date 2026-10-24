@@ -18,11 +18,12 @@ export function criarRotas() {
   const entregasService = new EntregasService(entregasRepo, motoristasRepo);
   const motoristasService = new MotoristasService(motoristasRepo, entregasRepo);
 
-  const entregasController = new EntregasController(entregasService);
+  const entregasController = new EntregasController(entregasService, motoristasService);
   const motoristasController = new MotoristasController(motoristasService);
 
   router.post("/entregas", entregasController.criar);
   router.get("/entregas", entregasController.listar);
+  router.get('/entregas/nova', entregasController.nova);
   router.get("/entregas/:id", entregasController.buscarPorId);
   router.patch("/entregas/:id/avancar", entregasController.avancar);
   router.patch("/entregas/:id/cancelar", entregasController.cancelar);

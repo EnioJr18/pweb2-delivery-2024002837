@@ -3,7 +3,7 @@ export default class MotoristasController {
     this.service = service;
   }
 
-criar = async (req, res) => {
+  criar = async (req, res) => {
     try {
       await this.service.criarMotorista(req.body);
       
@@ -18,7 +18,7 @@ criar = async (req, res) => {
     }
   }
 
-listar = async (req, res) => {
+  listar = async (req, res) => {
     try {
       const motoristas = await this.service.listarTodos();
       res.render('motoristas/index', { motoristas });
@@ -28,7 +28,7 @@ listar = async (req, res) => {
     }
   }
 
-novo = (req, res) => {
+  novo = (req, res) => {
     res.render('motoristas/novo');
   }
 

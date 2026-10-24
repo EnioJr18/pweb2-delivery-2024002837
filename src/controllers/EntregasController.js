@@ -1,53 +1,76 @@
 export default class EntregasController {
-  constructor(service) {
+  constructor(service, motoristasService) {
     this.service = service;
+    this.motoristasService = motoristasService;
   }
 
   criar = async (req, res) => {
     try {
-      const novaEntrega = await this.service.criarEntrega(req.body);
-      res.status(201).json(novaEntrega);
+      await this.service.criarEntrega(req.body);
+      req.flash('success', 'Entrega criada com sucesso!');
+      res.redirect('/entregas');
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      res.status(error.status || 400).render('entregas/nova', { 
+        error: error.message, 
+        oldData: req.body 
+      });
     }
-  };
+  }
 
   listar = async (req, res) => {
     try {
       const statusFiltro = req.query.status;
       const entregas = await this.service.buscarTodas(statusFiltro);
-      res.status(200).json(entregas);
+      res.render('entregas/index', { entregas, statusAtual: statusFiltro });
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      req.flash('error', 'Erro ao carregar as entregas.');
+      res.redirect('/');
     }
-  };
+  }
 
   buscarPorId = async (req, res) => {
     try {
       const entrega = await this.service.buscarPorId(req.params.id);
-      res.status(200).json(entrega);
+      let motoristas = [];
+      
+      if (entrega.status === 'CRIADA') {
+        const todosMotoristas = await this.motoristasService.listarTodos();
+        motoristas = todosMotoristas.filter(m => m.status === 'ATIVO');
+      }
+      
+      res.render('entregas/detalhes', { entrega, motoristas });
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      if (error.status === 404) {
+        return res.status(404).render('erros/404', { message: 'A entrega que procura não existe.' });
+      }
+      req.flash('error', error.message);
+      res.redirect('/entregas');
     }
-  };
+  }
+
+  nova = (req, res) => {
+    res.render('entregas/nova');
+  }
 
   avancar = async (req, res) => {
     try {
-      const entrega = await this.service.avancarStatus(req.params.id);
-      res.status(200).json(entrega);
+      await this.service.avancarStatus(req.params.id);
+      req.flash('success', 'Status da entrega avançado com sucesso!');
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      req.flash('error', error.message);
     }
-  };
+    res.redirect(`/entregas/${req.params.id}`);
+  }
 
   cancelar = async (req, res) => {
     try {
-      const entrega = await this.service.cancelar(req.params.id);
-      res.status(200).json(entrega);
+      await this.service.cancelar(req.params.id);
+      req.flash('success', 'Entrega cancelada com sucesso!');
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      req.flash('error', error.message);
     }
-  };
+    res.redirect(`/entregas/${req.params.id}`);
+  }
 
   historico = async (req, res) => {
     try {
@@ -58,22 +81,13 @@ export default class EntregasController {
     }
   };
 
-  atribuir = async (req, res) => {
+atribuir = async (req, res) => {
     try {
-      const payload = req.body || {};
-      const motoristaId =
-        payload.motoristaId ||
-        payload.motoristald ||
-        payload.id ||
-        Object.values(payload)[0];
-
-      const entrega = await this.service.atribuirMotorista(
-        req.params.id,
-        motoristaId,
-      );
-      res.status(200).json(entrega);
+      await this.service.atribuirMotorista(req.params.id, req.body.motoristaId);
+      req.flash('success', 'Motorista atribuído com sucesso!');
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      req.flash('error', error.message);
     }
-  };
+    res.redirect(`/entregas/${req.params.id}`);
+  }
 }
