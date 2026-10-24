@@ -8,6 +8,9 @@ import MotoristasController from "../controllers/MotoristasController.js";
 
 export function criarRotas() {
   const router = express.Router();
+  router.get('/', (req, res) => {
+      res.redirect('/entregas');
+    });
 
   const entregasRepo = new EntregasRepository();
   const motoristasRepo = new MotoristasRepository();
@@ -28,6 +31,7 @@ export function criarRotas() {
 
   router.post("/motoristas", motoristasController.criar);
   router.get("/motoristas", motoristasController.listar);
+  router.get('/motoristas/novo', motoristasController.novo);
   router.get("/motoristas/:id", motoristasController.buscarPorId);
   router.get("/motoristas/:id/entregas", motoristasController.listarEntregas);
 
