@@ -5,20 +5,32 @@ export default class MotoristasController {
 
   criar = async (req, res) => {
     try {
-      const motorista = await this.service.criarMotorista(req.body);
-      res.status(201).json(motorista);
+      await this.service.criarMotorista(req.body);
+      
+      req.flash('success', 'Motorista cadastrado com sucesso!');
+      res.redirect('/motoristas');
+      
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      res.status(error.status || 400).render('motoristas/novo', { 
+        error: error.message, 
+        oldData: req.body 
+      });
     }
-  };
+  }
 
   listar = async (req, res) => {
     try {
-      res.status(200).json(await this.service.listarTodos());
+      const motoristas = await this.service.listarTodos();
+      res.render('motoristas/index', { motoristas });
     } catch (error) {
-      res.status(error.status || 500).json({ erro: error.message });
+      req.flash('error', 'Erro ao carregar a lista de motoristas.');
+      res.redirect('/');
     }
-  };
+  }
+
+  novo = (req, res) => {
+    res.render('motoristas/novo');
+  }
 
   buscarPorId = async (req, res) => {
     try {

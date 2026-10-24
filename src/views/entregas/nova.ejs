@@ -1,0 +1,27 @@
+<div class="mb-4">
+    <h2>Nova Entrega</h2>
+    <a href="/entregas" class="text-decoration-none">← Voltar</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form action="/entregas" method="POST">
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição da Carga</label>
+                <input type="text" class="form-control" id="descricao" name="descricao" 
+                       value="<%= locals.oldData ? oldData.descricao : '' %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="origem" class="form-label">Origem</label>
+                <input type="text" class="form-control" id="origem" name="origem" 
+                       value="<%= locals.oldData ? oldData.origem : '' %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="destino" class="form-label">Destino</label>
+                <input type="text" class="form-control" id="destino" name="destino" 
+                       value="<%= locals.oldData ? oldData.destino : '' %>" required>
+            </div>
+            <button type="submit" class="btn btn-success mt-2">Criar Entrega</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gestão de Motoristas</h2>
+    <a href="/motoristas/novo" class="btn btn-primary">Novo Motorista</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (motoristas.length === 0) { %>
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">Nenhum motorista cadastrado.</td>
+                    </tr>
+                <% } else { %>
+                    <% motoristas.forEach(m => { %>
+                        <tr>
+                            <td class="align-middle"><%= m.id %></td>
+                            <td class="align-middle"><%= m.nome %></td>
+                            <td class="align-middle"><%= m.cpf %></td>
+                            <td class="align-middle">
+                                <span class="badge <%= m.status === 'ATIVO' ? 'bg-success' : 'bg-secondary' %>">
+                                    <%= m.status %>
+                                </span>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
